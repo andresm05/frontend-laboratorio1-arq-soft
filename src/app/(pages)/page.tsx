@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button";
+import { NavButton } from "@/components/NavButton";
 import ThemeSwitch from "@/components/ThemeSwitch";
 
 const page = () => {
@@ -15,7 +15,7 @@ const page = () => {
                 Selecciona el filtro
               </h1>
               <div className="flex flex-col space-y-2 w-4/6 mx-auto">
-              <Button title="Buscar por fecha" path="/search/date" />
+              <NavButton title="Buscar por fecha" path="/search/date" />
               <button className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-700 rounded text-lg">Button</button>
               </div>
 

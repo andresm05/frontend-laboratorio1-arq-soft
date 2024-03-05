@@ -1,5 +1,7 @@
 "use client";
 import { FlightApi } from "@/api/FlightApi";
+import { NavButton } from "@/components/NavButton";
+import { RequestButton } from "@/components/RequestButton";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { Flight } from "@/types/Flight.types";
 import { Alert } from "@mui/material";
@@ -37,11 +39,7 @@ const DateFilterPage = () => {
         <div className="flex flex-col dark:bg-gray-900 p-8 bg-gray-100 rounded-lg justify-center">
           <div className="flex flex-col space-y-4 items-center justify-center">
             <div className="flex justify-between w-full">
-              <button
-                className="text-white bg-amber-700 border-0 py-2 px-6 focus:outline-none hover:bg-amber-900 rounded text-lg"
-                onClick={() => router.back()}>
-                  Volver al menú principal
-                </button>
+              <NavButton title="Volver" path="/" back={true} />
                 <div className="flex items-center">
 
                 <ThemeSwitch />
@@ -69,12 +67,7 @@ const DateFilterPage = () => {
             </div>
           </div>
           <div className="flex mx-auto justify-center mt-8">
-            <button
-              className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-700 rounded text-lg"
-              onClick={() => handleSearchFlightsByDate()}
-            >
-              Buscar
-            </button>
+            <RequestButton title="Buscar vuelos" method={handleSearchFlightsByDate} />
           </div>
         </div>
         <div className="flex items-center w-full justify-center mx-auto">
