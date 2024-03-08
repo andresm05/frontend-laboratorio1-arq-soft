@@ -15,11 +15,11 @@ const page = () => {
                 Selecciona el filtro
               </h1>
               <div className="flex flex-col space-y-2 w-4/6 mx-auto">
-              <NavButton title="Buscar por fecha" path="/search/date" />
-              <button className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-700 rounded text-lg">Button</button>
+                <NavButton title="Buscar por fecha" path="/search/date" />
+                <NavButton title="Buscar Aerolinea" path="/search/airline" />
+                <NavButton title="Buscar por precio" path="/search/price" />
+                <NavButton title="Buscar por ruta" path="/search/route" />
               </div>
-
-
             </div>
           </div>
         </div>

@@ -10,6 +10,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import SideBar from "@/components/SideBar";
+import MainContainer from "@/components/MainContainer";
 
 const DateFilterPage = () => {
   const router = useRouter();
@@ -34,16 +36,15 @@ const DateFilterPage = () => {
     }
   };
   return (
-    <section className="flex items-center justify-center h-screen">
-      <div className="flex w-full justify-between mx-auto">
-        <div className="flex flex-col dark:bg-gray-900 p-8 bg-gray-100 rounded-lg justify-center">
-          <div className="flex flex-col space-y-4 items-center justify-center">
+    <section className="flex items-center justify-center min-h-screen overflow-hidden">
+      <div className="flex w-full justify-between ">
+        <SideBar>
+          <div className="flex flex-col space-y-4 items-center justify-center  h-full">
             <div className="flex justify-between w-full">
               <NavButton title="Volver" path="/" back={true} />
-                <div className="flex items-center">
-
+              <div className="flex items-center">
                 <ThemeSwitch />
-                </div>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <span>Fecha de salida</span>
@@ -66,11 +67,14 @@ const DateFilterPage = () => {
               </LocalizationProvider>
             </div>
           </div>
-          <div className="flex mx-auto justify-center mt-8">
-            <RequestButton title="Buscar vuelos" method={handleSearchFlightsByDate} />
+          <div className="flex mx-auto justify-center mt-8 ">
+            <RequestButton
+              title="Buscar vuelos"
+              method={handleSearchFlightsByDate}
+            />
           </div>
-        </div>
-        <div className="flex items-center w-full justify-center mx-auto">
+        </SideBar>
+        <MainContainer className="flex items-center w-full justify-center   h-lvh overflow-scroll mt-0 pt-10">
           {flights.length == 0 && (
             <div className="flex items-center justify-center h-screen w-full">
               <h1 className="text-2xl font-bold dark:text-gray-200">
@@ -78,24 +82,37 @@ const DateFilterPage = () => {
               </h1>
             </div>
           )}
-          <div className="flex flex-wrap w-full justify-center my-8 h-screen">
-
-          {flights.map((flight) => (
-            <div
-              key={flight.id}
-              className="flex flex-col m-4 items-center justify-center"
-            >
-              <h1 className="text-2xl font-bold dark:text-gray-200">{`Aerolínea: ${flight.airline}`}</h1>
-              <h1 className="text-2xl font-bold dark:text-gray-200">{`Origen: ${flight.origin}`}</h1>
-              <h1 className="text-2xl font-bold dark:text-gray-200">{`Destino: ${flight.destination}`}</h1>
-              <h1 className="text-2xl font-bold dark:text-gray-200">{`Fecha de salida: ${flight.departureDate}`}</h1>
-              <h1 className="text-2xl font-bold dark:text-gray-200">{`Fecha de llegada: ${flight.arrivalDate}`}</h1>
-              <h1 className="text-2xl font-bold dark:text-gray-200">{`Precio: ${flight.price}`}</h1>
-            </div>
-          ))}
-
+          <div className="flex flex-wrap w-full justify-center my-8 ">
+            {flights.map((flight) => (
+              <div
+                key={flight.id}
+                className="flex flex-col m-4 items-center justify-center bg-gray-800 rounded-lg shadow-lg p-4 text-white text-sm">
+                <h1>
+                  <span className="font-bold">Aerolínea: </span>{" "}
+                  {flight.airline}
+                </h1>
+                <h1>
+                  <span className="font-bold">Origen: </span> {flight.origin}
+                </h1>
+                <h1>
+                  <span className="font-bold">Destino: </span>{" "}
+                  {flight.destination}
+                </h1>
+                <h1>
+                  <span className="font-bold">Fecha de salida: </span>
+                  {flight.departureDate}
+                </h1>
+                <h1>
+                  <span className="font-bold">Fecha de llegada: </span>
+                  {flight.arrivalDate}
+                </h1>
+                <h1>
+                  <span className="font-bold">Precio: </span> {flight.price}
+                </h1>
+              </div>
+            ))}
           </div>
-        </div>
+        </MainContainer>
       </div>
     </section>
   );
