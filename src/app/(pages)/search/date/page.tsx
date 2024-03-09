@@ -74,7 +74,7 @@ const DateFilterPage = () => {
             />
           </div>
         </SideBar>
-        <MainContainer className="flex items-center w-full justify-center   h-lvh overflow-scroll mt-0 pt-10">
+        <MainContainer>
           {flights.length == 0 && (
             <div className="flex items-center justify-center h-screen w-full">
               <h1 className="text-2xl font-bold dark:text-gray-200">
