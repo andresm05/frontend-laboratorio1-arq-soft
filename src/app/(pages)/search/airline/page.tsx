@@ -1,6 +1,7 @@
 "use client";
 
 import { FlightApi } from "@/api/FlightApi";
+import { FlightCard } from "@/components/FlightCard";
 
 import MainContainer from "@/components/MainContainer";
 import { NavButton } from "@/components/NavButton";
@@ -9,66 +10,60 @@ import SideBar from "@/components/SideBar";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { Flight } from "@/types/Flight.types";
 import { Alert } from "@mui/material";
-import dayjs, { Dayjs } from "dayjs";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, {FormEvent, useState } from "react";
+import Swal from "sweetalert2";
 
 const AirlineFinder = () => {
-  const router = useRouter();
-  const [airLine, setAirLine] = useState<String>();
   const [flights, setFlights] = useState<Flight[]>([]);
 
-  const handleSearchFlightsByAirline = async () => {
-    console.log(airLine);
-
+  const handleSearchFlightsByAirline = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    //get airline from input form
+    const airline = event.currentTarget.airline.value;
     try {
-      const response = await FlightApi.get<Flight[]>("/search/airline", {
+      const {data} = await FlightApi.get<Flight[]>("/search/airline", {
         params: {
-          airline: airLine,
+          airline: airline,
         },
       });
 
-      if (response.data) {
+      if (data) {
         // Comprobación de si 'data' está definido en la respuesta
-        setFlights(response.data);
-        console.log(response.data);
+        setFlights(data);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron cargar los vuelos",
+        icon: "error",
+      });
     }
-  };
-  const handleChange = (event: {
-    target: { value: React.SetStateAction<String | undefined> };
-  }) => {
-    setAirLine(event.target.value);
+    
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen overflow-hidden">
       <div className="flex w-full justify-between ">
         <SideBar>
-          {" "}
           <div className=" w-full ">
             <div className="flex justify-between">
               <NavButton title="Volver" path="/" back={true} />
-
               <ThemeSwitch />
             </div>
 
             <div className="m-5">
-              <form action="">
+              <form onSubmit={handleSearchFlightsByAirline}>
                 <input
+                  className="block p-1 text-sm text-gray-900 bg-sky-50 rounded-lg border border-sky-200 focus:ring-sky-500 focus:border-sky-200 "
                   type="text"
-                  value={airLine}
-                  onChange={handleChange}
-                  placeholder="Ingrese una aerolinea"
+                  required
+                  name="airline"
+                  placeholder="Aerolínea"
                 />
                 <div className="flex mx-auto justify-center mt-8 ">
-                  {" "}
                   <RequestButton
-                    className="flex mx-auto justify-center mt-8 "
                     title="Buscar vuelos"
-                    method={handleSearchFlightsByAirline}
+                    isForm={true}
                   />
                 </div>
               </form>
@@ -78,39 +73,14 @@ const AirlineFinder = () => {
         <MainContainer>
           {flights.length == 0 && (
             <div className="flex items-center justify-center h-screen w-full">
-              <h1 className="text-2xl font-bold dark:text-gray-200">
+              <h1 className="text-2xl font-bold dark:text-gray-200 ml-4">
                 <Alert severity="info">No hay elementos en la lista</Alert>
               </h1>
             </div>
           )}
           <div className="flex flex-wrap w-full justify-center my-8 ">
             {flights.map((flight) => (
-              <div
-                key={flight.id}
-                className="flex flex-col m-4 items-center justify-center bg-gray-800 rounded-lg shadow-lg p-4 text-white text-sm">
-                <h1>
-                  <span className="font-bold">Aerolínea: </span>{" "}
-                  {flight.airline}
-                </h1>
-                <h1>
-                  <span className="font-bold">Origen: </span> {flight.origin}
-                </h1>
-                <h1>
-                  <span className="font-bold">Destino: </span>{" "}
-                  {flight.destination}
-                </h1>
-                <h1>
-                  <span className="font-bold">Fecha de salida: </span>
-                  {flight.departureDate}
-                </h1>
-                <h1>
-                  <span className="font-bold">Fecha de llegada: </span>
-                  {flight.arrivalDate}
-                </h1>
-                <h1>
-                  <span className="font-bold">Precio: </span> {flight.price}
-                </h1>
-              </div>
+              <FlightCard flight={flight} key={flight.id} />
             ))}
           </div>
         </MainContainer>

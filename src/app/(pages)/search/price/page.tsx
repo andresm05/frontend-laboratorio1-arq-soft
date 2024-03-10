@@ -8,18 +8,20 @@ import SideBar from "@/components/SideBar";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { Flight } from "@/types/Flight.types";
 import { Alert } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { FlightCard } from "@/components/FlightCard";
+import Swal from "sweetalert2";
 
 const PriceFinder = () => {
-  const router = useRouter();
-  const [minPrice, setMinPrice] = useState<number>(0); // Valor predeterminado de minPrice
-  const [maxPrice, setMaxPrice] = useState<number>(10000); // Valor predeterminado de maxPrice
   const [flights, setFlights] = useState<Flight[]>([]);
 
   const handleSearchFlightsByPrice = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault(); // Evitar que la página se refresque al enviar el formulario
+    
+    const minPrice = Number(event.currentTarget.minPrice.value);
+    const maxPrice = Number(event.currentTarget.maxPrice.value);
+
     try {
       const response = await FlightApi.get<Flight[]>("/search/price", {
         params: {
@@ -32,7 +34,11 @@ const PriceFinder = () => {
         setFlights(response.data);
       }
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron cargar los vuelos",
+        icon: "error",
+      });
     }
   };
 
@@ -41,28 +47,35 @@ const PriceFinder = () => {
       <div className="flex w-full justify-between ">
         <SideBar>
           <div className="flex justify-between">
-            <NavButton title="Volver" path="/" />
+            <NavButton title="Volver" path="/" back={true} />
             <ThemeSwitch />
           </div>
 
           <div className="m-5">
             <form onSubmit={handleSearchFlightsByPrice}>
+              <div className="flex flex-col space-y-4">
               <input
+                className="block p-1 text-sm text-gray-900 bg-sky-50 rounded border border-sky-200 focus:ring-sky-500 focus:border-sky-200 "
                 type="number"
-                value={minPrice}
-                onChange={(e) => setMinPrice(Number(e.target.value))}
+                name="minPrice"
+                defaultValue={0}
+                required
+                min={0}
                 placeholder="Precio mínimo"
               />
               <input
+                className="block p-1 text-sm text-gray-900 bg-sky-50 rounded border border-sky-200 focus:ring-sky-500 focus:border-sky-200 "
                 type="number"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                name="maxPrice"
+                required
+                min={0}
                 placeholder="Precio máximo"
               />
+              </div>
               <div className="flex mx-auto justify-center mt-8">
                 <RequestButton
-                  title="Buscar vuelos por precio"
-                  type="submit" // Cambiar el tipo de botón a submit
+                  title="Buscar vuelos"
+                  isForm={true}
                 />
               </div>
             </form>
@@ -70,7 +83,7 @@ const PriceFinder = () => {
         </SideBar>
         <MainContainer>
           {flights.length === 0 && (
-            <div className="flex items-center justify-center h-screen w-full">
+            <div className="flex items-center justify-center h-screen w-full ml-4">
               <h1 className="text-2xl font-bold dark:text-gray-200">
                 <Alert severity="info">No hay elementos en la lista</Alert>
               </h1>
@@ -78,32 +91,7 @@ const PriceFinder = () => {
           )}
           <div className="flex flex-wrap w-full justify-center my-8 ">
             {flights.map((flight) => (
-              <div
-                key={flight.id}
-                className="flex flex-col m-4 items-center justify-center bg-gray-800 rounded-lg shadow-lg p-4 text-white text-sm">
-                <h1>
-                  <span className="font-bold">Aerolínea: </span>
-                  {flight.airline}
-                </h1>
-                <h1>
-                  <span className="font-bold">Origen: </span> {flight.origin}
-                </h1>
-                <h1>
-                  <span className="font-bold">Destino: </span>
-                  {flight.destination}
-                </h1>
-                <h1>
-                  <span className="font-bold">Fecha de salida: </span>
-                  {flight.departureDate}
-                </h1>
-                <h1>
-                  <span className="font-bold">Fecha de llegada: </span>
-                  {flight.arrivalDate}
-                </h1>
-                <h1>
-                  <span className="font-bold">Precio: </span> {flight.price}
-                </h1>
-              </div>
+              <FlightCard flight={flight} key={flight.id} />
             ))}
           </div>
         </MainContainer>

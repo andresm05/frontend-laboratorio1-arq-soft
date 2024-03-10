@@ -8,18 +8,20 @@ import SideBar from "@/components/SideBar";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { Flight } from "@/types/Flight.types";
 import { Alert } from "@mui/material";
-import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import { FlightCard } from "@/components/FlightCard";
 
 const RouteFinder = () => {
-  const router = useRouter();
-  const [origin, setOrigin] = useState<string>("");
-  const [destination, setDestination] = useState<string>("");
   const [flights, setFlights] = useState<Flight[]>([]);
 
   const handleSearchFlightsByRoute = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault(); // Evitar que la página se refresque al enviar el formulario
+
+    const origin = event.currentTarget.origin.value;
+    const destination = event.currentTarget.destination.value;
+
     try {
       const response = await FlightApi.get<Flight[]>("/search/route", {
         params: {
@@ -31,8 +33,12 @@ const RouteFinder = () => {
       if (response.data) {
         setFlights(response.data);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: error.response.data,
+      });
     }
   };
 
@@ -41,29 +47,28 @@ const RouteFinder = () => {
       <div className="flex w-full justify-between ">
         <SideBar>
           <div className="flex justify-between">
-            <NavButton title="Volver" path="/" />
+            <NavButton title="Volver" path="/" back={true} />
             <ThemeSwitch />
           </div>
 
           <div className="m-5">
             <form onSubmit={handleSearchFlightsByRoute}>
-              <input
-                type="text"
-                value={origin}
-                onChange={(e) => setOrigin(e.target.value)}
-                placeholder="Origen"
-              />
-              <input
-                type="text"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="Destino"
-              />
-              <div className="flex mx-auto justify-center mt-8">
-                <RequestButton
-                  title="Buscar vuelos por ruta"
-                  type="submit" // Cambiar el tipo de botón a submit
+              <div className="flex flex-col space-y-4">
+                <input
+                  type="text"
+                  className="block p-1 text-sm text-gray-900 bg-sky-50 rounded-lg border border-sky-200 focus:ring-sky-500 focus:border-sky-200 "
+                  placeholder="Origen"
+                  name="origin"
                 />
+                <input
+                  type="text"
+                  className="block p-1 text-sm text-gray-900 bg-sky-50 rounded-lg border border-sky-200 focus:ring-sky-500 focus:border-sky-200 "
+                  placeholder="Destino"
+                  name="destination"
+                />
+              </div>
+              <div className="flex mx-auto justify-center mt-8">
+                <RequestButton title="Buscar vuelos" isForm={true} />
               </div>
             </form>
           </div>
@@ -78,32 +83,7 @@ const RouteFinder = () => {
           )}
           <div className="flex flex-wrap w-full justify-center my-8 ">
             {flights.map((flight) => (
-              <div
-                key={flight.id}
-                className="flex flex-col m-4 items-center justify-center bg-gray-800 rounded-lg shadow-lg p-4 text-white text-sm">
-                <h1>
-                  <span className="font-bold">Aerolínea: </span>
-                  {flight.airline}
-                </h1>
-                <h1>
-                  <span className="font-bold">Origen: </span> {flight.origin}
-                </h1>
-                <h1>
-                  <span className="font-bold">Destino: </span>
-                  {flight.destination}
-                </h1>
-                <h1>
-                  <span className="font-bold">Fecha de salida: </span>
-                  {flight.departureDate}
-                </h1>
-                <h1>
-                  <span className="font-bold">Fecha de llegada: </span>
-                  {flight.arrivalDate}
-                </h1>
-                <h1>
-                  <span className="font-bold">Precio: </span> {flight.price}
-                </h1>
-              </div>
+              <FlightCard key={flight.id} flight={flight} />
             ))}
           </div>
         </MainContainer>
