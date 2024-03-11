@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 const AirlineFinder = () => {
   const [flights, setFlights] = useState<Flight[]>([]);
 
+  //this function will handle the search of flights by airline
   const handleSearchFlightsByAirline = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     //get airline from input form

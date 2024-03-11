@@ -14,10 +14,11 @@ import Swal from "sweetalert2";
 const PriceFinder = () => {
   const [flights, setFlights] = useState<Flight[]>([]);
 
+  //this function will handle the search of flights by price
   const handleSearchFlightsByPrice = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault(); // Evitar que la página se refresque al enviar el formulario
+    event.preventDefault(); // Avoid page refresh
     
     const minPrice = Number(event.currentTarget.minPrice.value);
     const maxPrice = Number(event.currentTarget.maxPrice.value);

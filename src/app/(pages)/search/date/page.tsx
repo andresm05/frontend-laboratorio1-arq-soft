@@ -19,6 +19,7 @@ const DateFilterPage = () => {
   const [arrivalDate, setArrivalDate] = useState<Dayjs>(dayjs());
   const [flights, setFlights] = useState<Flight[]>([]);
 
+  //this function will handle the search of flights by date
   const handleSearchFlightsByDate = async () => {
     try {
       const { data } = await FlightApi.get<Flight[]>("/search/date", {

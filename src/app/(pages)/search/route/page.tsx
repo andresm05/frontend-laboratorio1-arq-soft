@@ -14,10 +14,11 @@ import { FlightCard } from "@/components/FlightCard";
 const RouteFinder = () => {
   const [flights, setFlights] = useState<Flight[]>([]);
 
+  //this function will handle the search of flights by route
   const handleSearchFlightsByRoute = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault(); // Evitar que la página se refresque al enviar el formulario
+    event.preventDefault(); // Avoid page refresh
 
     const origin = event.currentTarget.origin.value;
     const destination = event.currentTarget.destination.value;

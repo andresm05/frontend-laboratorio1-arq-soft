@@ -2,6 +2,7 @@ import { Flight } from "@/types/Flight.types"
 
 export const FlightCard = ({flight}: {flight: Flight}) => {
   return (
+    // This is the card that will be rendered for each flight
     <div
     key={flight.id}
     className="flex flex-col m-4 items-center justify-center bg-gray-800 rounded-lg shadow-lg p-4 text-white text-sm">
